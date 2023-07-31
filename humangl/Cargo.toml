@@ -1,0 +1,9 @@
+[package]
+name = "human_gl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+matrix = { path = "../matrix" }
+gl = "0.14.0"
+glfw = "0.52.0"
