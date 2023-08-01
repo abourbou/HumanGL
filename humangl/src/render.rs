@@ -1,13 +1,15 @@
 extern crate glfw;
 use self::glfw::{Context, Key, Action, Glfw, Window, WindowEvent};
 extern crate gl;
-use self::gl::types::*;
 
 use std::sync::mpsc::Receiver;
-use std::{ptr, mem};
-use std::os::raw::c_void;
+use std::{ptr};
+
 
 use crate::compute_shader::compute_shader;
+use crate::mesh::Mesh;
+use crate::create_cuboid::create_cuboid;
+use matrix::Vector;
 
 // settings
 const SCR_WIDTH: u32 = 800;
@@ -31,72 +33,40 @@ fn initialize_glfw() -> (Glfw, Window, Receiver<(f64, WindowEvent)>){
 
 	// gl: load all OpenGL function pointers
 	gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
-
+    unsafe {
+        // Enable depth test
+        gl::Enable(gl::DEPTH_TEST);
+        // Accept fragment if it closer to the camera than the former one
+        gl::DepthFunc(gl::LESS);
+    }
 	(glfw, window, events)
-}
-
-pub fn create_triangle() -> (GLuint, GLuint) {
-    let (shader_program, vao) = unsafe {
-        // build and compile our shader program
-        let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-
-        // set up vertex data (and buffer(s)) and configure vertex attributes
-        // ------------------------------------------------------------------
-        // HINT: type annotation is crucial since default for float literals is f64
-        let vertices: [f32; 12] = [
-             0.5,  0.5, 0.0,  // top right
-             0.5, -0.5, 0.0,  // bottom right
-            -0.5, -0.5, 0.0,  // bottom left
-            -0.5,  0.5, 0.0   // top left
-        ];
-        let indices = [ // note that we start from 0!
-            0, 1, 3,  // first Triangle
-            1, 2, 3   // second Triangle
-        ];
-        let (mut vbo, mut vao, mut ebo) = (0, 0, 0);
-        gl::GenVertexArrays(1, &mut vao);
-        gl::GenBuffers(1, &mut vbo);
-        gl::GenBuffers(1, &mut ebo);
-        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        gl::BindVertexArray(vao);
-
-        gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-        gl::BufferData(gl::ARRAY_BUFFER,
-                       (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-                       &vertices[0] as *const f32 as *const c_void,
-                       gl::STATIC_DRAW);
-
-        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
-        gl::BufferData(gl::ELEMENT_ARRAY_BUFFER,
-                       (indices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-                       &indices[0] as *const i32 as *const c_void,
-                       gl::STATIC_DRAW);
-
-        gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 3 * mem::size_of::<GLfloat>() as GLsizei, ptr::null());
-        gl::EnableVertexAttribArray(0);
-
-        // note that this is allowed, the call to gl::VertexAttribPointer registered vbo as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-        gl::BindBuffer(gl::ARRAY_BUFFER, 0);
-
-        // remember: do NOT unbind the ebo while a vao is active as the bound element buffer object IS stored in the vao; keep the ebo bound.
-        // gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0);
-
-        // You can unbind the vao afterwards so other vao calls won't accidentally modify this vao, but this rarely happens. Modifying other
-        // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-        gl::BindVertexArray(0);
-
-        // uncomment this call to draw in wireframe polygons.
-        // gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-
-        (shader_program, vao)
-    };
-    (shader_program, vao)
 }
 
 pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
-    let (shader_program, vao) = create_triangle();
+    let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
+    let mesh : Mesh = create_cuboid(1., 1.01, 1., [1.0, 0.5, 0.2].into());
+    let mesh2 : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
+
+    let color_string = std::ffi::CString::new("color").unwrap();
+    let color_location = unsafe {
+        gl::GetUniformLocation(shader_program, color_string.as_ptr())
+    };
+
+    let mvp_string = std::ffi::CString::new("MVP").unwrap();
+    let mvp_location = unsafe {
+        gl::GetUniformLocation(shader_program, mvp_string.as_ptr())
+    };
+
+    let model      = matrix::Matrix4f::identity();
+    let view       = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
+    let projection = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
+
+    // Create MVP, transpose because openGL is row major
+    let mvp = (projection * view * model).transpose();
+    let flat_mvp : Vec<f32> = mvp.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+
     // render loop
     while !window.should_close() {
         process_events(&mut window, &events);
@@ -105,12 +75,22 @@ pub fn window() {
         // ------
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
             
-            // draw our first triangle
             gl::UseProgram(shader_program);
-            gl::BindVertexArray(vao);
-            gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());
+            
+            gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, flat_mvp.as_ptr());
+
+            // Draw our first rectangle
+            gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());
+            gl::BindVertexArray(mesh.vao);
+            gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+
+            // Draw our second rectangle
+            gl::Uniform3fv(color_location, 1, mesh2.color.arr.as_ptr());
+            gl::BindVertexArray(mesh2.vao);
+            gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+
             gl::BindVertexArray(0);
         }
 

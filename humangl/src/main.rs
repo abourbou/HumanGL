@@ -1,7 +1,8 @@
 
 mod render;
 mod compute_shader;
-mod create_rectangle;
+mod create_cuboid;
+mod mesh;
 
 use render::window;
 
