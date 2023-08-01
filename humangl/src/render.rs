@@ -8,7 +8,6 @@ use std::{ptr, mem};
 use std::os::raw::c_void;
 
 use crate::compute_shader::compute_shader;
-use matrix::Vector;
 
 // settings
 const SCR_WIDTH: u32 = 800;

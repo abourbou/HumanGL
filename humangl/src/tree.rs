@@ -8,10 +8,14 @@
 //     EBO: u32,
 // }
 
-use gl::PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED;
+use matrix::{Vector, Matrix};
+type TVector3<T> = Vector<T, 3>;
+type TMatrix4<T> = Matrix<T, 4, 4>;
 
 pub fn add_forty_two(x: u32) -> u32 {x + 42}
 pub fn sub_forty_two(x: u32) -> u32 {x - 42}
+
+
 
 #[derive(Clone, Debug)]
 pub struct Node {
