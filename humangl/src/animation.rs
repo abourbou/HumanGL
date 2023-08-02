@@ -10,10 +10,11 @@ pub struct Keyframe {
     pub trans: TVector3<f32>,
 }
 
+
 fn create_iso(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     let start_time = keyframes[0].time;
     let end_time = keyframes.last().unwrap().time;
-    let now = time % (end_time - start_time);
+    let now = time % (end_time + 1 - start_time);
     let mut low = 0;
     let mut high = 0;
     for i in 1..keyframes.len() {
@@ -24,11 +25,19 @@ fn create_iso(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
         }
     }
     let t = (now - keyframes[low].time) as f32 / (keyframes[high].time - keyframes[low].time) as f32;
+    //slerp
     let rot_vec = lerp(keyframes[low].rot, keyframes[high].rot, t);
     let trans_vec = lerp(keyframes[low].trans, keyframes[high].trans, t);
     let rot_mat = get_rotation(rot_vec);
     let trans_mat = get_translation(trans_vec);
     rot_mat * trans_mat
+}
+
+struct walk_animation {
+    head
+    rhand = Vector{Keyframe}
+    rforearm
+    lhabnd
 }
 
 pub fn animate_rhand(time: u32) -> TMatrix4<f32> {
