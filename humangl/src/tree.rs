@@ -24,6 +24,7 @@ pub struct Node {
     pub children: Vec<Node>,
     // pub isometry : i32,
     pub animation_function: fn(u32) -> u32,
+    // pub animation_function: fn(u32) -> TMatrix4,
 }
 
 impl Node {
