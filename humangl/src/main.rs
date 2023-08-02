@@ -11,6 +11,6 @@ use tree::show;
 use render::window;
 
 fn main() {
-	show();
-	// window();
+	// show();
+	window();
 }

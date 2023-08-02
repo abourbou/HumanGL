@@ -4,8 +4,10 @@ extern crate gl;
 
 use std::sync::mpsc::Receiver;
 use std::{ptr};
+use std::time::{Duration, SystemTime};
 
-
+use crate::tree::Node;
+use crate::animation;
 use crate::compute_shader::compute_shader;
 use crate::mesh::Mesh;
 use crate::create_cuboid::create_cuboid;
@@ -48,6 +50,7 @@ pub fn window() {
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
     let mesh : Mesh = create_cuboid(1., 1.01, 1., [1.0, 0.5, 0.2].into());
     let mesh2 : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
+    let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand());
 
     let color_string = std::ffi::CString::new("color").unwrap();
     let color_location = unsafe {
@@ -67,6 +70,9 @@ pub fn window() {
     let mvp = (projection * view * model).transpose();
     let flat_mvp : Vec<f32> = mvp.arr.iter().flat_map(|row| row.iter().cloned()).collect();
 
+    //set timer
+    let sys_time = SystemTime::now();
+
     // render loop
     while !window.should_close() {
         process_events(&mut window, &events);
@@ -79,17 +85,21 @@ pub fn window() {
             
             gl::UseProgram(shader_program);
             
-            gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, flat_mvp.as_ptr());
+            // gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, flat_mvp.as_ptr());
+
+            // Animation with Node
+            let time = sys_time.elapsed().unwrap().as_millis() as u32;
+            rhand.render_animation(time, mvp_location, color_location);
 
             // Draw our first rectangle
-            gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());
-            gl::BindVertexArray(mesh.vao);
-            gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+            // gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());
+            // gl::BindVertexArray(mesh.vao);
+            // gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
 
             // Draw our second rectangle
-            gl::Uniform3fv(color_location, 1, mesh2.color.arr.as_ptr());
-            gl::BindVertexArray(mesh2.vao);
-            gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+            // gl::Uniform3fv(color_location, 1, mesh2.color.arr.as_ptr());
+            // gl::BindVertexArray(mesh2.vao);
+            // gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
 
             gl::BindVertexArray(0);
         }

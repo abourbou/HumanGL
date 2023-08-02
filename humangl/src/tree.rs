@@ -8,6 +8,9 @@
 //     EBO: u32,
 // }
 extern crate gl;
+
+use std::ptr;
+use gl::types::GLint;
 use matrix::{Vector, Matrix};
 
 
@@ -15,13 +18,15 @@ pub fn add_forty_two(x: u32) -> u32 {x + 42}
 pub fn sub_forty_two(x: u32) -> u32 {x - 42}
 use crate::animation;
 use crate::animation::{Keyframe};
+use crate::mesh::Mesh;
+use crate::create_cuboid::create_cuboid;
 
 type TVector3<T> = Vector<T, 3>;
 type TMatrix4<T> = Matrix<T, 4, 4>;
 
 #[derive(Clone, Debug)]
 pub struct Node {
-    // pub mesh: Mesh,
+    pub mesh: Mesh,
     pub name : String,
     pub children: Vec<Node>,
     pub keyframes: Vec<Keyframe>,
@@ -29,9 +34,10 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn new(name: &str, children: Vec<Node>, keyframes: Vec<Keyframe>) -> Node {
+    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>) -> Node {
         Node {
             name: name.to_string(),
+            mesh,
             children,
             keyframes,
         }
@@ -50,14 +56,30 @@ impl Node {
         recursion(self, name, new_name);
     }
 
-    pub fn exec_function(&mut self, time: u32) {
-        fn recursion(node: &mut Node, time: u32) {
+    fn draw_mesh(&mut self, color_location: GLint) {
+        unsafe {
+
+        }
+    }
+
+    pub fn render_animation(&mut self, time: u32, mvp_location: GLint, color_location: GLint) {
+        fn recursion(node: &mut Node, time: u32, mvp_location: GLint, color_location: GLint) {
             let iso_matrix = animation::animate(node.keyframes.clone(), time);
+            let iso = iso_matrix.transpose();
+            let mvp: Vec<f32> = iso.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+            // create matrix and render
+            unsafe {
+                gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, mvp.as_ptr());
+                gl::Uniform3fv(color_location, 1, node.mesh.color.arr.as_ptr());
+                gl::BindVertexArray(node.mesh.vao);
+                gl::DrawElements(gl::TRIANGLES, node.mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+            }
+
             for it in node.children.iter_mut() {
-                recursion(it, time);
+                recursion(it, time, mvp_location, color_location);
             }
         }
-        recursion(self, time);
+        recursion(self, time, mvp_location, color_location);
     }
 
     pub fn info(& mut self) {
@@ -77,11 +99,12 @@ impl Node {
 }
 
 pub fn show() {
-    let mut rhand = Node::new("rhand", Vec::new(), animation::walk_rhand());
+    let mesh = create_cuboid(1., 1.01, 1., [1.0, 0.5, 0.2].into());
+    let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand());
 
-    for i in 0..1000 {
-        rhand.exec_function(i);
-    }
+    // for i in 0..1000 {
+    //     rhand.exec_function(i);
+    // }
     // let mut rhand = Node::new("rhand", Vec::new(), animation::walk_rhand());
     // let mut rarm = Node::new("rarm", Vec::from([rhand]), animation::no_animation());
     // let mut lhand = Node::new("lhand", Vec::new(), animation::no_animation());
