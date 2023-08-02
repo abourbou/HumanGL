@@ -5,7 +5,6 @@ use std::io::Read;
 use std::ptr;
 use std::str;
 
-use gl;
 use gl::types::*;
 
 pub fn compute_shader(vertex_path: &str, fragment_path: &str) -> GLuint {
@@ -55,7 +54,7 @@ pub fn compute_shader(vertex_path: &str, fragment_path: &str) -> GLuint {
 // Check shader compilation/linking errors
 unsafe fn check_compile_errors(shader: u32, type_: &str) {
     let mut success = gl::FALSE as GLint;
-    let mut info_log = Vec::with_capacity(1024);
+    let mut info_log = vec![0;1024];
     // Subtract 1 to skip the trailing null character
     info_log.set_len(1024 - 1);
     if type_ != "PROGRAM" {
