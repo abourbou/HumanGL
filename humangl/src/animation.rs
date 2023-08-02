@@ -1,26 +1,46 @@
 use matrix::{Vector, Matrix};
 use matrix::linear_operations::linear_interp::lerp;
+use matrix::graphic_operations::translation::translation;
+use matrix::graphic_operations::rotation::{rx, ry, rz};
 
 type TVector3<T> = Vector<T, 3>;
 type TMatrix4<T> = Matrix<T, 4, 4>;
 
+#[derive(Clone, Debug)]
 pub struct Keyframe {
     pub time: u32, //ms
     pub rot: TVector3<f32>,
     pub trans: TVector3<f32>,
 }
 
+fn get_rotation(angles: TVector3<f32>) -> TMatrix4<f32> {
+    let a = angles.arr;
+    let mat_x = rx(a[0]);
+    let mat_y = ry(a[1]);
+    let mat_z = rz(a[2]);
+    mat_x * mat_y * mat_z
+}
 
-fn create_iso(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
+fn get_translation(trans: TVector3<f32>) -> TMatrix4<f32> {
+    let t = trans.arr;
+    translation(t[0], t[1], t[2])
+}
+
+pub fn animate(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
+    if keyframes.len() == 1 {
+        let rot_mat = get_rotation(keyframes[0].rot);
+        let tran_mat = get_translation(keyframes[0].trans);
+        return rot_mat * tran_mat
+    }
     let start_time = keyframes[0].time;
     let end_time = keyframes.last().unwrap().time;
-    let now = time % (end_time + 1 - start_time);
+    let now = time % (end_time - start_time);
     let mut low = 0;
     let mut high = 0;
     for i in 1..keyframes.len() {
-        high = i;
-        low = i - 1;
-        if keyframes[i].time >= keyframes[high].time {
+        if now < keyframes[i].time {
+            high = i;
+            low = i - 1;
             break;
         }
     }
@@ -33,14 +53,17 @@ fn create_iso(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     rot_mat * trans_mat
 }
 
-struct walk_animation {
-    head
-    rhand = Vector{Keyframe}
-    rforearm
-    lhabnd
+pub fn no_animation() -> Vec<Keyframe> {
+    let mut keyframes = Vec::new();
+    keyframes.push(Keyframe{
+        time: 0,
+        rot: Vector::from([0., 0., 0.]),
+        trans: Vector::from([0., 0., 0.]),
+    });
+    keyframes
 }
 
-pub fn animate_rhand(time: u32) -> TMatrix4<f32> {
+pub fn walk_rhand() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time: 0,
@@ -49,13 +72,13 @@ pub fn animate_rhand(time: u32) -> TMatrix4<f32> {
     });
     keyframes.push(Keyframe{
         time: 500,
-        rot: Vector::from([0., 90., 0.]),
-        trans: Vector::from([0., 0., 0.]),
+        rot: Vector::from([0., 0., 0.]),
+        trans: Vector::from([0., 10., 0.]),
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 0., 0.]),
-        trans: Vector::from([0., 0., 0.]),
+        trans: Vector::from([0., 5., 0.]),
     });
-    create_iso(keyframes, time)
+    keyframes
 }
