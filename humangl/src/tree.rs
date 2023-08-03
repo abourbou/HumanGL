@@ -30,18 +30,20 @@ pub struct Node {
     pub name : String,
     pub children: Vec<Node>,
     pub keyframes: Vec<Keyframe>,
+
     pub rot_center: TVector3<f32>,
-    // pub isometry : i32,
+    pub isometry : TMatrix4<f32>,
 }
 
 impl Node {
-    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>, rot_center: TVector3<f32>) -> Node {
+    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>, rot_center: TVector3<f32>, isometry: TMatrix4<f32>) -> Node {
         Node {
             name: name.to_string(),
             mesh,
             children,
             keyframes,
             rot_center,
+            isometry,
         }
     }
 
@@ -64,13 +66,20 @@ impl Node {
         }
     }
 
-    pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
-        fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint) {
-            let iso_matrix = animation::animate(node.keyframes.clone(), time);
-            // let iso = iso_matrix.transpose();
-            let to_rot_center = animation::get_translation(node.rot_center * -1.);
-            let iso = iso_matrix * to_rot_center;
-            let model: Vec<f32> = iso.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+    pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
+        fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
+            //this is local space
+            let animate_mat = animation::animate(node.keyframes.clone(), time);
+            // let to_rot_center = animation::get_translation(node.rot_center * -1.);
+            let local_space = animate_mat * data.clone();
+
+            //translate in world space
+
+            // let to_center = animation::get_translation(node.rot_center);
+            let world_space = local_space.clone() * node.isometry;
+
+            // let move_obj = node.isometry * world_space;
+            let model: Vec<f32> = world_space.clone().arr.iter().flat_map(|row| row.iter().cloned()).collect();
             // create matrix and render
             unsafe {
                 gl::UniformMatrix4fv(model_location, 1, gl::TRUE, model.as_ptr());
@@ -80,10 +89,10 @@ impl Node {
             }
 
             for it in node.children.iter_mut() {
-                recursion(it, time, model_location, color_location);
+                recursion(it, time, model_location, color_location, local_space.clone());
             }
         }
-        recursion(self, time, model_location, color_location);
+        recursion(self, time, model_location, color_location, data);
     }
 
     pub fn info(& mut self) {
@@ -103,8 +112,8 @@ impl Node {
 }
 
 pub fn show() {
-    let mesh = create_cuboid(1., 1., 1., [1.0, 0.5, 0.2].into());
-    let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand(), TVector3::from([0., 1., 0.]));
+    // let mesh = create_cuboid(1., 1., 1., [1.0, 0.5, 0.2].into());
+    // let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand(), TVector3::from([0., 1., 0.]));
 
     // for i in 0..1000 {
     //     rhand.exec_function(i);

@@ -8,9 +8,11 @@ use std::time::{Duration, SystemTime};
 
 use crate::tree::Node;
 use crate::animation;
+use crate::walk;
 use crate::compute_shader::compute_shader;
 use crate::mesh::Mesh;
 use crate::create_cuboid::create_cuboid;
+use crate::bone::create_bone;
 use matrix::Vector;
 
 // settings
@@ -48,9 +50,18 @@ pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-    let mesh : Mesh = create_cuboid(1., 1.01, 1., [1.0, 0.5, 0.2].into());
-    let mesh2 : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
-    let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand(), Vector::from([0., 0.5, 0.]));
+    let mesh_head : Mesh = create_bone(0.35, 0.3, 0.3, [1.0, 0.8, 0.6].into());
+    let mesh_rhand : Mesh = create_bone(0.15, 0.3, 0.15, [1.0, 0.8, 0.6].into());
+    let mesh_rarm : Mesh = create_bone(0.15, 0.3, 0.15, [0., 1., 1.].into());
+    let mesh_body : Mesh = create_bone(0.35, 0.6, 0.15, [0., 1., 1.].into());
+    let bone : Mesh = create_bone(1.0, 1.0, 1.0, [0., 1., 1.].into());
+
+    // let mesh_rarm : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
+    // let mut head = Node::new("head", mesh_head, Vec::new(), walk::head(), Vector::from([0., -0.15, 0.]), animation::get_translation(Vector::from([0.0, 0.45, 0.])));
+    let mut rhand = Node::new("rhand", mesh_rhand, Vec::new(), walk::rhand(), Vector::from([0., 0.15, 0.]), animation::get_translation(Vector::from([0.3, -0.15, 0.])));
+    let mut rarm = Node::new("rarm", mesh_rarm, Vec::from([rhand]), walk::rarm(), Vector::from([0., 0.15, 0.]), animation::get_translation(Vector::from([0.3, 0.0, 0.])));
+    // let mut body = Node::new("body", mesh_body, Vec::from([rarm]), walk::body(), Vector::from([0., 0., 0.]), animation::get_translation(Vector::from([0., 0., 0.])));
+
 
     let color_string = std::ffi::CString::new("color").unwrap();
     let color_location = unsafe {
@@ -99,7 +110,7 @@ pub fn window() {
         // render
         // ------
         unsafe {
-            gl::ClearColor(0.2, 0.3, 0.3, 1.0);
+            gl::ClearColor(0., 0., 0., 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
             
             gl::UseProgram(shader_program);
@@ -109,7 +120,8 @@ pub fn window() {
 
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
-            rhand.render_animation(time, model_location, color_location);
+            rarm.render_animation(time, model_location, color_location, matrix::Matrix4f::identity());
+
 
             // Draw our first rectangle
             // gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());

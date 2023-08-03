@@ -62,23 +62,3 @@ pub fn no_animation() -> Vec<Keyframe> {
     });
     keyframes
 }
-
-pub fn walk_rhand() -> Vec<Keyframe> {
-    let mut keyframes = Vec::new();
-    keyframes.push(Keyframe{
-        time: 0,
-        rot: Vector::from([0., 0., 0.]),
-        trans: Vector::from([0., 0., 0.]),
-    });
-    keyframes.push(Keyframe{
-        time: 5000,
-        rot: Vector::from([0., 0., 360.]),
-        trans: Vector::from([0., 0., 0.]),
-    });
-    keyframes.push(Keyframe{
-        time: 10000,
-        rot: Vector::from([0., 0., 0.]),
-        trans: Vector::from([0., 0., 0.]),
-    });
-    keyframes
-}

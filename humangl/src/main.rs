@@ -5,6 +5,8 @@ mod create_cuboid;
 mod mesh;
 mod tree;
 mod animation;
+mod walk;
+mod bone;
 // mod sphere_interp;
 
 use tree::show;
