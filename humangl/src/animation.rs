@@ -71,14 +71,14 @@ pub fn walk_rhand() -> Vec<Keyframe> {
         trans: Vector::from([0., 0., 0.]),
     });
     keyframes.push(Keyframe{
-        time: 500,
-        rot: Vector::from([0., 0., 0.]),
-        trans: Vector::from([0., 10., 0.]),
+        time: 5000,
+        rot: Vector::from([0., 0., 360.]),
+        trans: Vector::from([0., 0., 0.]),
     });
     keyframes.push(Keyframe{
-        time: 1000,
+        time: 10000,
         rot: Vector::from([0., 0., 0.]),
-        trans: Vector::from([0., 5., 0.]),
+        trans: Vector::from([0., 0., 0.]),
     });
     keyframes
 }

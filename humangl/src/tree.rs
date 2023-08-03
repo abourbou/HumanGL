@@ -11,7 +11,7 @@ extern crate gl;
 
 use std::ptr;
 use gl::types::GLint;
-use matrix::{Vector, Matrix};
+use matrix::{Vector, Matrix, Matrix4};
 
 
 pub fn add_forty_two(x: u32) -> u32 {x + 42}
@@ -30,6 +30,7 @@ pub struct Node {
     pub name : String,
     pub children: Vec<Node>,
     pub keyframes: Vec<Keyframe>,
+    // pub rot_center: TVector3<f32>,
     // pub isometry : i32,
 }
 
@@ -62,24 +63,24 @@ impl Node {
         }
     }
 
-    pub fn render_animation(&mut self, time: u32, mvp_location: GLint, color_location: GLint) {
-        fn recursion(node: &mut Node, time: u32, mvp_location: GLint, color_location: GLint) {
+    pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
+        fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint) {
             let iso_matrix = animation::animate(node.keyframes.clone(), time);
             let iso = iso_matrix.transpose();
-            let mvp: Vec<f32> = iso.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+            let model: Vec<f32> = iso.arr.iter().flat_map(|row| row.iter().cloned()).collect();
             // create matrix and render
             unsafe {
-                gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, mvp.as_ptr());
+                gl::UniformMatrix4fv(model_location, 1, gl::FALSE, model.as_ptr());
                 gl::Uniform3fv(color_location, 1, node.mesh.color.arr.as_ptr());
                 gl::BindVertexArray(node.mesh.vao);
                 gl::DrawElements(gl::TRIANGLES, node.mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
             }
 
             for it in node.children.iter_mut() {
-                recursion(it, time, mvp_location, color_location);
+                recursion(it, time, model_location, color_location);
             }
         }
-        recursion(self, time, mvp_location, color_location);
+        recursion(self, time, model_location, color_location);
     }
 
     pub fn info(& mut self) {

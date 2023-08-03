@@ -57,18 +57,37 @@ pub fn window() {
         gl::GetUniformLocation(shader_program, color_string.as_ptr())
     };
 
-    let mvp_string = std::ffi::CString::new("MVP").unwrap();
-    let mvp_location = unsafe {
-        gl::GetUniformLocation(shader_program, mvp_string.as_ptr())
+    let model_string = std::ffi::CString::new("model").unwrap();
+    let model_location = unsafe {
+        gl::GetUniformLocation(shader_program, model_string.as_ptr())
     };
 
-    let model      = matrix::Matrix4f::identity();
-    let view       = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
-    let projection = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
+    let view_string = std::ffi::CString::new("view").unwrap();
+    let view_location = unsafe {
+        gl::GetUniformLocation(shader_program, view_string.as_ptr())
+    };
 
-    // Create MVP, transpose because openGL is row major
-    let mvp = (projection * view * model).transpose();
-    let flat_mvp : Vec<f32> = mvp.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+    let proj_string = std::ffi::CString::new("projection").unwrap();
+    let proj_location = unsafe {
+        gl::GetUniformLocation(shader_program, proj_string.as_ptr())
+    };
+
+    let view       = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
+    let proj = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
+
+    let flat_view: Vec<f32> = view.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+    let flat_proj: Vec<f32> = proj.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+
+    unsafe {
+        gl::UseProgram(shader_program);
+
+        gl::UniformMatrix4fv(view_location, 1, gl::TRUE, flat_view.as_ptr());
+        gl::UniformMatrix4fv(proj_location, 1, gl::TRUE, flat_proj.as_ptr());
+    }
+
+    // // Create MVP, transpose because openGL is row major
+    // let mvp = (projection * view * model).transpose();
+    // let flat_mvp : Vec<f32> = mvp.arr.iter().flat_map(|row| row.iter().cloned()).collect();
 
     //set timer
     let sys_time = SystemTime::now();
@@ -85,11 +104,12 @@ pub fn window() {
             
             gl::UseProgram(shader_program);
             
-            // gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, flat_mvp.as_ptr());
-
+            //wire mode
+            gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+            
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
-            rhand.render_animation(time, mvp_location, color_location);
+            rhand.render_animation(time, model_location, color_location);
 
             // Draw our first rectangle
             // gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());
