@@ -50,7 +50,7 @@ pub fn window() {
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
     let mesh : Mesh = create_cuboid(1., 1.01, 1., [1.0, 0.5, 0.2].into());
     let mesh2 : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
-    let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand());
+    let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand(), Vector::from([0., 0.5, 0.]));
 
     let color_string = std::ffi::CString::new("color").unwrap();
     let color_location = unsafe {
@@ -106,7 +106,7 @@ pub fn window() {
             
             //wire mode
             gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-            
+
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
             rhand.render_animation(time, model_location, color_location);

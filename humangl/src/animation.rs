@@ -13,7 +13,7 @@ pub struct Keyframe {
     pub trans: TVector3<f32>,
 }
 
-fn get_rotation(angles: TVector3<f32>) -> TMatrix4<f32> {
+pub fn get_rotation(angles: TVector3<f32>) -> TMatrix4<f32> {
     let a = angles.arr;
     let mat_x = rx(a[0]);
     let mat_y = ry(a[1]);
@@ -21,7 +21,7 @@ fn get_rotation(angles: TVector3<f32>) -> TMatrix4<f32> {
     mat_x * mat_y * mat_z
 }
 
-fn get_translation(trans: TVector3<f32>) -> TMatrix4<f32> {
+pub fn get_translation(trans: TVector3<f32>) -> TMatrix4<f32> {
     let t = trans.arr;
     translation(t[0], t[1], t[2])
 }
@@ -30,9 +30,9 @@ pub fn animate(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     if keyframes.len() == 1 {
         let rot_mat = get_rotation(keyframes[0].rot);
         let tran_mat = get_translation(keyframes[0].trans);
-        return rot_mat * tran_mat
+        return tran_mat * rot_mat
     }
-    let start_time = keyframes[0].time;
+    let start_time: u32 = keyframes[0].time;
     let end_time = keyframes.last().unwrap().time;
     let now = time % (end_time - start_time);
     let mut low = 0;
