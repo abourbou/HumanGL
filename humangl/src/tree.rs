@@ -11,7 +11,7 @@ extern crate gl;
 
 use std::ptr;
 use gl::types::GLint;
-use matrix::{Vector, Matrix, Matrix4};
+use matrix::{Vector, Matrix, Matrix4, Matrix4f};
 
 
 pub fn add_forty_two(x: u32) -> u32 {x + 42}
@@ -30,19 +30,16 @@ pub struct Node {
     pub name : String,
     pub children: Vec<Node>,
     pub keyframes: Vec<Keyframe>,
-
-    pub rot_center: TVector3<f32>,
     pub isometry : TMatrix4<f32>,
 }
 
 impl Node {
-    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>, rot_center: TVector3<f32>, isometry: TMatrix4<f32>) -> Node {
+    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>, isometry: TMatrix4<f32>) -> Node {
         Node {
             name: name.to_string(),
             mesh,
             children,
             keyframes,
-            rot_center,
             isometry,
         }
     }
@@ -66,17 +63,16 @@ impl Node {
         }
     }
 
-    pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
+    pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
         fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
             //this is local space
             let animate_mat = animation::animate(node.keyframes.clone(), time);
             // let to_rot_center = animation::get_translation(node.rot_center * -1.);
-            let local_space = animate_mat * data.clone();
+            let local_space = data.clone() * node.isometry * animate_mat;
 
             //translate in world space
-
-            // let to_center = animation::get_translation(node.rot_center);
-            let world_space = local_space.clone() * node.isometry;
+            // let local_center_in_world_space = parent_iso;
+            let world_space =  local_space;
 
             // let move_obj = node.isometry * world_space;
             let model: Vec<f32> = world_space.clone().arr.iter().flat_map(|row| row.iter().cloned()).collect();
@@ -92,6 +88,7 @@ impl Node {
                 recursion(it, time, model_location, color_location, local_space.clone());
             }
         }
+        let data = Matrix4f::identity();
         recursion(self, time, model_location, color_location, data);
     }
 

@@ -50,17 +50,21 @@ pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-    let mesh_head : Mesh = create_bone(0.35, 0.3, 0.3, [1.0, 0.8, 0.6].into());
-    let mesh_rhand : Mesh = create_bone(0.15, 0.3, 0.15, [1.0, 0.8, 0.6].into());
-    let mesh_rarm : Mesh = create_bone(0.15, 0.3, 0.15, [0., 1., 1.].into());
-    let mesh_body : Mesh = create_bone(0.35, 0.6, 0.15, [0., 1., 1.].into());
+    let mesh_head : Mesh = create_bone(0.36, 0.3, 0.3, [1.0, 0.8, 0.6].into());
+    let mesh_rhand : Mesh = create_bone(0.18, 0.3, 0.15, [1.0, 0.8, 0.6].into());
+    let mesh_rarm : Mesh = create_bone(0.18, 0.3, 0.15, [0., 1., 1.].into());
+    let mesh_rleg : Mesh = create_bone(0.18, 0.3, 0.15, [0.43, 0.2, 1.].into());
+    let mesh_rfoot : Mesh = create_bone(0.18, 0.3, 0.15, [0.43, 0.2, 1.].into());
+    let mesh_body : Mesh = create_bone(0.36, 0.5, 0.15, [0., 1., 1.].into());
     let bone : Mesh = create_bone(1.0, 1.0, 1.0, [0., 1., 1.].into());
 
     // let mesh_rarm : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
-    // let mut head = Node::new("head", mesh_head, Vec::new(), walk::head(), Vector::from([0., -0.15, 0.]), animation::get_translation(Vector::from([0.0, 0.45, 0.])));
-    let mut rhand = Node::new("rhand", mesh_rhand, Vec::new(), walk::rhand(), Vector::from([0., 0.15, 0.]), animation::get_translation(Vector::from([0.3, -0.15, 0.])));
-    let mut rarm = Node::new("rarm", mesh_rarm, Vec::from([rhand]), walk::rarm(), Vector::from([0., 0.15, 0.]), animation::get_translation(Vector::from([0.3, 0.0, 0.])));
-    // let mut body = Node::new("body", mesh_body, Vec::from([rarm]), walk::body(), Vector::from([0., 0., 0.]), animation::get_translation(Vector::from([0., 0., 0.])));
+    let mut head = Node::new("head", mesh_head, Vec::new(), walk::head(), animation::get_translation(Vector::from([0.0, 0.15, 0.])));
+    let mut rhand = Node::new("rhand", mesh_rhand, Vec::new(), walk::rhand(),  animation::get_translation(Vector::from([0.0, -0.15, 0.])));
+    let mut rarm = Node::new("rarm", mesh_rarm, Vec::from([rhand]), walk::rarm(),  animation::get_translation(Vector::from([0.125, 0.0, 0.])));
+    let mut rfoot = Node::new("rfoot", mesh_rfoot, Vec::from([]), walk::rfoot(),  animation::get_translation(Vector::from([0., -0.15, 0.])));
+    let mut rleg = Node::new("rleg", mesh_rleg, Vec::from([rfoot]), walk::rleg(),  animation::get_translation(Vector::from([0.04, -0.25, 0.])));
+    let mut body = Node::new("body", mesh_body, Vec::from([head, rarm, rleg]), walk::body(),  animation::get_translation(Vector::from([0., 0., 0.])));
 
 
     let color_string = std::ffi::CString::new("color").unwrap();
@@ -120,7 +124,7 @@ pub fn window() {
 
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
-            rarm.render_animation(time, model_location, color_location, matrix::Matrix4f::identity());
+            body.render_animation(time, model_location, color_location);
 
 
             // Draw our first rectangle
