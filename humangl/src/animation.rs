@@ -14,7 +14,7 @@ pub struct Keyframe {
 }
 
 pub fn get_rotation(angles: &TVector3<f32>) -> TMatrix4<f32> {
-    let a = angles.arr;
+    let a = &angles.arr;
     let mat_x = rx(a[0]);
     let mat_y = ry(a[1]);
     let mat_z = rz(a[2]);
@@ -22,7 +22,7 @@ pub fn get_rotation(angles: &TVector3<f32>) -> TMatrix4<f32> {
 }
 
 pub fn get_translation(trans: &TVector3<f32>) -> TMatrix4<f32> {
-    let t = trans.arr;
+    let t = &trans.arr;
     translation(t[0], t[1], t[2])
 }
 
