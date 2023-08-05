@@ -53,12 +53,12 @@ pub fn animate(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     rot_mat * trans_mat
 }
 
-pub fn no_animation() -> Vec<Keyframe> {
-    let mut keyframes = Vec::new();
-    keyframes.push(Keyframe{
-        time: 0,
-        rot: Vector::from([0., 0., 0.]),
-        trans: Vector::from([0., 0., 0.]),
-    });
-    keyframes
-}
+// pub fn no_animation() -> Vec<Keyframe> {
+//     let mut keyframes = Vec::new();
+//     keyframes.push(Keyframe{
+//         time: 0,
+//         rot: Vector::from([0., 0., 0.]),
+//         trans: Vector::from([0., 0., 0.]),
+//     });
+//     keyframes
+// }

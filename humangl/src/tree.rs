@@ -11,17 +11,12 @@ extern crate gl;
 
 use std::ptr;
 use gl::types::GLint;
-use matrix::{Vector, Matrix, Matrix4, Matrix4f};
+use matrix::{Matrix, Matrix4, Matrix4f};
 
-
-pub fn add_forty_two(x: u32) -> u32 {x + 42}
-pub fn sub_forty_two(x: u32) -> u32 {x - 42}
 use crate::animation;
-use crate::animation::{Keyframe};
+use crate::animation::Keyframe;
 use crate::mesh::Mesh;
-use crate::create_cuboid::create_cuboid;
 
-type TVector3<T> = Vector<T, 3>;
 type TMatrix4<T> = Matrix<T, 4, 4>;
 
 #[derive(Clone, Debug)]
@@ -44,37 +39,12 @@ impl Node {
         }
     }
 
-    pub fn set_name(&mut self, name: &str, new_name: &str) {
-        fn recursion(node: &mut Node, name: &str, new_name: &str) {
-            if node.name == name {
-                node.name = new_name.to_string();
-            } else {
-                for it in node.children.iter_mut() {
-                    recursion(it, name, new_name);
-                }
-            }
-        }
-        recursion(self, name, new_name);
-    }
-
-    fn draw_mesh(&mut self, color_location: GLint) {
-        unsafe {
-
-        }
-    }
-
     pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
         fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
             //this is local space
             let animate_mat = animation::animate(node.keyframes.clone(), time);
-            // let to_rot_center = animation::get_translation(node.rot_center * -1.);
             let local_space = data.clone() * node.isometry * animate_mat;
-
-            //translate in world space
-            // let local_center_in_world_space = parent_iso;
             let world_space =  local_space;
-
-            // let move_obj = node.isometry * world_space;
             let model: Vec<f32> = world_space.clone().arr.iter().flat_map(|row| row.iter().cloned()).collect();
             // create matrix and render
             unsafe {
@@ -91,39 +61,4 @@ impl Node {
         let data = Matrix4f::identity();
         recursion(self, time, model_location, color_location, data);
     }
-
-    pub fn info(& mut self) {
-        fn recursion(node: &mut Node, data: String) {
-            for child in node.children.iter_mut() {
-                let mut total = data.clone();
-                total.push_str(":");
-                total.push_str(&child.name);
-                
-                println!("my name is: {}, route is: {:?}", child.name, total);
-                recursion(child, total.clone());
-            }
-        }
-        println!("my name is: {}, route is : {}", self.name, self.name);
-        recursion(self, self.name.clone());
-    }
-}
-
-pub fn show() {
-    // let mesh = create_cuboid(1., 1., 1., [1.0, 0.5, 0.2].into());
-    // let mut rhand = Node::new("rhand", mesh, Vec::new(), animation::walk_rhand(), TVector3::from([0., 1., 0.]));
-
-    // for i in 0..1000 {
-    //     rhand.exec_function(i);
-    // }
-    // let mut rhand = Node::new("rhand", Vec::new(), animation::walk_rhand());
-    // let mut rarm = Node::new("rarm", Vec::from([rhand]), animation::no_animation());
-    // let mut lhand = Node::new("lhand", Vec::new(), animation::no_animation());
-    // let mut larm = Node::new("larm", Vec::from([lhand]), animation::no_animation());
-    // let mut body = Node::new("body", Vec::from([rarm, larm]), animation::no_animation());
-    // println!("before");
-    // body.info();
-    // println!("after");
-    // body.set_name("rarm", "new_rarm");
-    // body.info();
-    // body.exec_function(42);
 }
