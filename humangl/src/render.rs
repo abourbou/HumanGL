@@ -3,12 +3,10 @@ use self::glfw::{Context, Key, Action, Glfw, Window, WindowEvent};
 extern crate gl;
 
 use std::sync::mpsc::Receiver;
-use std::{ptr};
+use std::time::SystemTime;
 
-
+use crate::walk;
 use crate::compute_shader::compute_shader;
-use crate::mesh::Mesh;
-use crate::create_cuboid::create_cuboid;
 use matrix::Vector;
 
 // settings
@@ -46,26 +44,44 @@ pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-    let mesh : Mesh = create_cuboid(1., 1.01, 1., [1.0, 0.5, 0.2].into());
-    let mesh2 : Mesh = create_cuboid(1.5, 1., 0.6, [0.2, 0.5, 0.8].into());
+    let mut body = walk::get_body();
+
 
     let color_string = std::ffi::CString::new("color").unwrap();
     let color_location = unsafe {
         gl::GetUniformLocation(shader_program, color_string.as_ptr())
     };
 
-    let mvp_string = std::ffi::CString::new("MVP").unwrap();
-    let mvp_location = unsafe {
-        gl::GetUniformLocation(shader_program, mvp_string.as_ptr())
+    let model_string = std::ffi::CString::new("model").unwrap();
+    let model_location = unsafe {
+        gl::GetUniformLocation(shader_program, model_string.as_ptr())
     };
 
-    let model      = matrix::Matrix4f::identity();
-    let view       = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
-    let projection = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
+    let view_string = std::ffi::CString::new("view").unwrap();
+    let view_location = unsafe {
+        gl::GetUniformLocation(shader_program, view_string.as_ptr())
+    };
 
-    // Create MVP, transpose because openGL is row major
-    let mvp = (projection * view * model).transpose();
-    let flat_mvp : Vec<f32> = mvp.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+    let proj_string = std::ffi::CString::new("projection").unwrap();
+    let proj_location = unsafe {
+        gl::GetUniformLocation(shader_program, proj_string.as_ptr())
+    };
+
+    let view       = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
+    let proj = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
+
+    let flat_view: Vec<f32> = view.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+    let flat_proj: Vec<f32> = proj.arr.iter().flat_map(|row| row.iter().cloned()).collect();
+
+    unsafe {
+        gl::UseProgram(shader_program);
+
+        gl::UniformMatrix4fv(view_location, 1, gl::TRUE, flat_view.as_ptr());
+        gl::UniformMatrix4fv(proj_location, 1, gl::TRUE, flat_proj.as_ptr());
+    }
+
+    //set timer
+    let sys_time = SystemTime::now();
 
     // render loop
     while !window.should_close() {
@@ -74,27 +90,19 @@ pub fn window() {
         // render
         // ------
         unsafe {
-            gl::ClearColor(0.2, 0.3, 0.3, 1.0);
+            gl::ClearColor(0., 0., 0., 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-            
+
             gl::UseProgram(shader_program);
-            
-            gl::UniformMatrix4fv(mvp_location, 1, gl::FALSE, flat_mvp.as_ptr());
 
-            // Draw our first rectangle
-            gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());
-            gl::BindVertexArray(mesh.vao);
-            gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+            //wire mode
+            gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
 
-            // Draw our second rectangle
-            gl::Uniform3fv(color_location, 1, mesh2.color.arr.as_ptr());
-            gl::BindVertexArray(mesh2.vao);
-            gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
-
+            // Animation with Node
+            let time = sys_time.elapsed().unwrap().as_millis() as u32;
+            body.render_animation(time, model_location, color_location);
             gl::BindVertexArray(0);
         }
-
-
         // glfw: swap buffers and poll IO events
         window.swap_buffers();
         glfw.poll_events();

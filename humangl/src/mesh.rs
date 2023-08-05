@@ -4,6 +4,7 @@ use std::os::raw::c_void;
 
 use matrix::{Vector};
 
+#[derive(Clone, Debug)]
 pub struct Mesh {
     pub vertices: Vec<f32>,
     pub indices: Vec<u32>,
