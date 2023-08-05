@@ -5,12 +5,8 @@ extern crate gl;
 use std::sync::mpsc::Receiver;
 use std::time::SystemTime;
 
-use crate::tree::Node;
-use crate::animation;
 use crate::walk;
 use crate::compute_shader::compute_shader;
-use crate::mesh::Mesh;
-use crate::create_cuboid::create_cuboid;
 use matrix::Vector;
 
 // settings
