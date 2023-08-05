@@ -6,7 +6,7 @@ mod mesh;
 mod tree;
 mod animation;
 mod walk;
-mod jump;
+mod dance;
 use render::window;
 
 fn main() {

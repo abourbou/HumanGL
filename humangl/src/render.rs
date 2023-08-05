@@ -6,7 +6,7 @@ use std::sync::mpsc::Receiver;
 use std::time::SystemTime;
 
 use crate::walk;
-use crate::jump;
+use crate::dance;
 use crate::compute_shader::compute_shader;
 use matrix::Vector;
 
@@ -45,7 +45,7 @@ pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-    let mut body = jump::get_body();
+    let mut body = dance::get_body();
 
 
     let color_string = std::ffi::CString::new("color").unwrap();
