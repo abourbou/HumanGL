@@ -48,27 +48,7 @@ pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-    let mesh_head : Mesh = create_cuboid(0.36, 0.3, 0.3, [1.0, 0.8, 0.6].into());
-    let mesh_rhand : Mesh = create_cuboid(0.18, 0.3, 0.15, [1.0, 0.8, 0.6].into());
-    let mesh_rarm : Mesh = create_cuboid(0.18, 0.3, 0.15, [0., 1., 1.].into());
-    let mesh_lhand : Mesh = create_cuboid(0.18, 0.3, 0.15, [1.0, 0.8, 0.6].into());
-    let mesh_larm : Mesh = create_cuboid(0.18, 0.3, 0.15, [0., 1., 1.].into());
-    let mesh_rleg : Mesh = create_cuboid(0.18, 0.3, 0.15, [0.43, 0.2, 1.].into());
-    let mesh_rfoot : Mesh = create_cuboid(0.18, 0.3, 0.15, [0.43, 0.2, 1.].into());
-    let mesh_lleg : Mesh = create_cuboid(0.18, 0.3, 0.15, [0.43, 0.2, 1.].into());
-    let mesh_lfoot : Mesh = create_cuboid(0.18, 0.3, 0.15, [0.43, 0.2, 1.].into());
-    let mesh_body : Mesh = create_cuboid(0.36, 0.5, 0.15, [0., 1., 1.].into());
-
-    let head = Node::new("head", mesh_head, Vec::new(), walk::head(), animation::get_translation(Vector::from([0.0, 0.15, 0.])));
-    let rhand = Node::new("rhand", mesh_rhand, Vec::new(), walk::rhand(),  animation::get_translation(Vector::from([0.0, -0.15, 0.])));
-    let rarm = Node::new("rarm", mesh_rarm, Vec::from([rhand]), walk::rarm(),  animation::get_translation(Vector::from([0.125, 0.0, 0.])));
-    let lhand = Node::new("lhand", mesh_lhand, Vec::new(), walk::lhand(),  animation::get_translation(Vector::from([0.0, -0.15, 0.])));
-    let larm = Node::new("larm", mesh_larm, Vec::from([lhand]), walk::larm(),  animation::get_translation(Vector::from([-0.125, 0.0, 0.])));
-    let rfoot = Node::new("rfoot", mesh_rfoot, Vec::from([]), walk::rfoot(),  animation::get_translation(Vector::from([0., -0.15, 0.])));
-    let rleg = Node::new("rleg", mesh_rleg, Vec::from([rfoot]), walk::rleg(),  animation::get_translation(Vector::from([0.045, -0.25, 0.])));
-    let lfoot = Node::new("lfoot", mesh_lfoot, Vec::from([]), walk::lfoot(),  animation::get_translation(Vector::from([0., -0.15, 0.])));
-    let lleg = Node::new("lleg", mesh_lleg, Vec::from([lfoot]), walk::lleg(),  animation::get_translation(Vector::from([-0.045, -0.25, 0.])));
-    let mut body = Node::new("body", mesh_body, Vec::from([head, rarm, larm, rleg, lleg]), walk::body(),  animation::get_translation(Vector::from([0., 0., 0.])));
+    let mut body = walk::get_body();
 
 
     let color_string = std::ffi::CString::new("color").unwrap();
@@ -104,10 +84,6 @@ pub fn window() {
         gl::UniformMatrix4fv(proj_location, 1, gl::TRUE, flat_proj.as_ptr());
     }
 
-    // // Create MVP, transpose because openGL is row major
-    // let mvp = (projection * view * model).transpose();
-    // let flat_mvp : Vec<f32> = mvp.arr.iter().flat_map(|row| row.iter().cloned()).collect();
-
     //set timer
     let sys_time = SystemTime::now();
 
@@ -120,30 +96,17 @@ pub fn window() {
         unsafe {
             gl::ClearColor(0., 0., 0., 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-            
+
             gl::UseProgram(shader_program);
-            
+
             //wire mode
             gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
 
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
             body.render_animation(time, model_location, color_location);
-
-            // Draw our first rectangle
-            // gl::Uniform3fv(color_location, 1, mesh.color.arr.as_ptr());
-            // gl::BindVertexArray(mesh.vao);
-            // gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
-
-            // Draw our second rectangle
-            // gl::Uniform3fv(color_location, 1, mesh2.color.arr.as_ptr());
-            // gl::BindVertexArray(mesh2.vao);
-            // gl::DrawElements(gl::TRIANGLES, mesh.indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
-
             gl::BindVertexArray(0);
         }
-
-
         // glfw: swap buffers and poll IO events
         window.swap_buffers();
         glfw.poll_events();

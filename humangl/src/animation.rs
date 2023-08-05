@@ -13,7 +13,7 @@ pub struct Keyframe {
     pub trans: TVector3<f32>,
 }
 
-pub fn get_rotation(angles: TVector3<f32>) -> TMatrix4<f32> {
+pub fn get_rotation(angles: &TVector3<f32>) -> TMatrix4<f32> {
     let a = angles.arr;
     let mat_x = rx(a[0]);
     let mat_y = ry(a[1]);
@@ -21,15 +21,15 @@ pub fn get_rotation(angles: TVector3<f32>) -> TMatrix4<f32> {
     mat_x * mat_y * mat_z
 }
 
-pub fn get_translation(trans: TVector3<f32>) -> TMatrix4<f32> {
+pub fn get_translation(trans: &TVector3<f32>) -> TMatrix4<f32> {
     let t = trans.arr;
     translation(t[0], t[1], t[2])
 }
 
 pub fn animate(keyframes: &Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     if keyframes.len() == 1 {
-        let rot_mat = get_rotation(keyframes[0].rot);
-        let tran_mat = get_translation(keyframes[0].trans);
+        let rot_mat = get_rotation(&(keyframes[0].rot));
+        let tran_mat = get_translation(&(keyframes[0].trans));
         return tran_mat * rot_mat
     }
     let start_time: u32 = keyframes[0].time;
@@ -48,17 +48,7 @@ pub fn animate(keyframes: &Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     //slerp
     let rot_vec = lerp(keyframes[low].rot, keyframes[high].rot, t);
     let trans_vec = lerp(keyframes[low].trans, keyframes[high].trans, t);
-    let rot_mat = get_rotation(rot_vec);
-    let trans_mat = get_translation(trans_vec);
+    let rot_mat = get_rotation(&rot_vec);
+    let trans_mat = get_translation(&trans_vec);
     rot_mat * trans_mat
 }
-
-// pub fn no_animation() -> Vec<Keyframe> {
-//     let mut keyframes = Vec::new();
-//     keyframes.push(Keyframe{
-//         time: 0,
-//         rot: Vector::from([0., 0., 0.]),
-//         trans: Vector::from([0., 0., 0.]),
-//     });
-//     keyframes
-// }
