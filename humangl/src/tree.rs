@@ -41,11 +41,10 @@ impl Node {
 
     pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
         fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
-            //this is local space
-            let animate_mat = animation::animate(node.keyframes.clone(), time);
-            let local_space = data.clone() * node.isometry * animate_mat;
-            let world_space =  local_space;
-            let model: Vec<f32> = world_space.clone().arr.iter().flat_map(|row| row.iter().cloned()).collect();
+            // create iso matrix
+            let animate_mat = animation::animate(&node.keyframes, time);
+            let iso_mat = data * node.isometry * animate_mat;
+            let model: Vec<f32> = iso_mat.arr.iter().flat_map(|row| row.iter().cloned()).collect();
             // create matrix and render
             unsafe {
                 gl::UniformMatrix4fv(model_location, 1, gl::TRUE, model.as_ptr());
@@ -55,7 +54,7 @@ impl Node {
             }
 
             for it in node.children.iter_mut() {
-                recursion(it, time, model_location, color_location, local_space.clone());
+                recursion(it, time, model_location, color_location, iso_mat);
             }
         }
         let data = Matrix4f::identity();

@@ -26,7 +26,7 @@ pub fn get_translation(trans: TVector3<f32>) -> TMatrix4<f32> {
     translation(t[0], t[1], t[2])
 }
 
-pub fn animate(keyframes: Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
+pub fn animate(keyframes: &Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
     if keyframes.len() == 1 {
         let rot_mat = get_rotation(keyframes[0].rot);
         let tran_mat = get_translation(keyframes[0].trans);
