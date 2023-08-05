@@ -65,9 +65,9 @@ pub fn window() {
     let lhand = Node::new("lhand", mesh_lhand, Vec::new(), walk::lhand(),  animation::get_translation(Vector::from([0.0, -0.15, 0.])));
     let larm = Node::new("larm", mesh_larm, Vec::from([lhand]), walk::larm(),  animation::get_translation(Vector::from([-0.125, 0.0, 0.])));
     let rfoot = Node::new("rfoot", mesh_rfoot, Vec::from([]), walk::rfoot(),  animation::get_translation(Vector::from([0., -0.15, 0.])));
-    let rleg = Node::new("rleg", mesh_rleg, Vec::from([rfoot]), walk::rleg(),  animation::get_translation(Vector::from([0.04, -0.25, 0.])));
+    let rleg = Node::new("rleg", mesh_rleg, Vec::from([rfoot]), walk::rleg(),  animation::get_translation(Vector::from([0.045, -0.25, 0.])));
     let lfoot = Node::new("lfoot", mesh_lfoot, Vec::from([]), walk::lfoot(),  animation::get_translation(Vector::from([0., -0.15, 0.])));
-    let lleg = Node::new("lleg", mesh_lleg, Vec::from([lfoot]), walk::lleg(),  animation::get_translation(Vector::from([-0.04, -0.25, 0.])));
+    let lleg = Node::new("lleg", mesh_lleg, Vec::from([lfoot]), walk::lleg(),  animation::get_translation(Vector::from([-0.045, -0.25, 0.])));
     let mut body = Node::new("body", mesh_body, Vec::from([head, rarm, larm, rleg, lleg]), walk::body(),  animation::get_translation(Vector::from([0., 0., 0.])));
 
 
