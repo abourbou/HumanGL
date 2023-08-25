@@ -6,6 +6,9 @@ mod mesh;
 mod tree;
 mod animation;
 mod walk;
+// ! TEMP
+mod test_animation;
+
 use render::window;
 
 fn main() {

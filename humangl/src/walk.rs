@@ -37,13 +37,13 @@ pub fn body() -> Vec<Keyframe> {
         trans: Vector::from([0., 0., 0.]),
     });
     keyframes.push(Keyframe{
-        time: 500,
-        rot: Vector::from([0., 0., 0.]),
+        time: 1000,
+        rot: Vector::from([0., 180., 0.]),
         trans: Vector::from([0., 0., 0.]),
     });
     keyframes.push(Keyframe{
-        time: 1000,
-        rot: Vector::from([0., 0., 0.]),
+        time: 2000,
+        rot: Vector::from([0., 360., 0.]),
         trans: Vector::from([0., 0., 0.]),
     });
     keyframes

@@ -25,25 +25,25 @@ pub struct Node {
     pub name : String,
     pub children: Vec<Node>,
     pub keyframes: Vec<Keyframe>,
-    pub isometry : TMatrix4<f32>,
+    pub start_pose : TMatrix4<f32>,
 }
 
 impl Node {
-    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>, isometry: TMatrix4<f32>) -> Node {
+    pub fn new(name: &str, mesh: Mesh, children: Vec<Node>, keyframes: Vec<Keyframe>, start_pose: TMatrix4<f32>) -> Node {
         Node {
             name: name.to_string(),
             mesh,
             children,
             keyframes,
-            isometry,
+            start_pose,
         }
     }
 
     pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
-        fn recursion(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, data: Matrix4<f32>) {
+        fn recurs_render(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, previous_isometry: Matrix4<f32>) {
             // create iso matrix
             let animate_mat = animation::animate(&node.keyframes, time);
-            let iso_mat = data * node.isometry * animate_mat;
+            let iso_mat = previous_isometry * node.start_pose * animate_mat;
             let model: Vec<f32> = iso_mat.arr.iter().flat_map(|row| row.iter().cloned()).collect();
             // create matrix and render
             unsafe {
@@ -54,10 +54,10 @@ impl Node {
             }
 
             for it in node.children.iter_mut() {
-                recursion(it, time, model_location, color_location, iso_mat);
+                recurs_render(it, time, model_location, color_location, iso_mat);
             }
         }
-        let data = Matrix4f::identity();
-        recursion(self, time, model_location, color_location, data);
+
+        recurs_render(self, time, model_location, color_location, Matrix4f::identity())
     }
 }
