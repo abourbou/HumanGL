@@ -2,13 +2,14 @@
 use std::{mem};
 use std::os::raw::c_void;
 
-use matrix::{Vector};
+use matrix::{Vector, Vector3f};
 
 #[derive(Clone, Debug)]
 pub struct Mesh {
     pub vertices: Vec<f32>,
     pub indices: Vec<u32>,
     pub color: Vector<f32, 3>,
+	pub scaling: Vector3f,
     pub vao: u32,
 
     vbo: u32,
@@ -16,9 +17,9 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn new(vertices: Vec<f32>, indices: Vec<u32>, color : Vector<f32, 3>) -> Mesh {
+    pub fn new(vertices: Vec<f32>, indices: Vec<u32>, color : Vector<f32, 3>, scaling : Vector3f) -> Mesh {
         let mut mesh = Mesh {
-            vertices, indices, color,
+            vertices, indices, color, scaling,
             vao: 0, vbo: 0, ebo: 0,
         };
 

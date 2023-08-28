@@ -12,11 +12,11 @@ extern crate gl;
 use std::ptr;
 use gl::types::GLint;
 use matrix::{Matrix, Matrix4, Matrix4f};
+use matrix::graphic_operations::scaling_v;
 
 use crate::animation;
 use crate::animation::Keyframe;
 use crate::mesh::Mesh;
-
 type TMatrix4<T> = Matrix<T, 4, 4>;
 
 #[derive(Clone, Debug)]
@@ -42,7 +42,7 @@ impl Node {
     pub fn render_animation(&mut self, time: u32, model_location: GLint, color_location: GLint) {
         fn recurs_render(node: &mut Node, time: u32, model_location: GLint, color_location: GLint, previous_isometry: Matrix4<f32>) {
             // create iso matrix
-            let animate_mat = animation::animate(&node.keyframes, time);
+            let animate_mat = animation::animate(&node.keyframes, time) * scaling_v(node.mesh.scaling);
             let iso_mat = previous_isometry * node.start_pose * animate_mat;
             let model: Vec<f32> = iso_mat.arr.iter().flat_map(|row| row.iter().cloned()).collect();
             // create matrix and render

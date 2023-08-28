@@ -106,11 +106,11 @@ pub fn window() {
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
 
             //* KAZUMA
-                // walk_body.render_animation(time, model_location, color_location);
+                walk_body.render_animation(time, model_location, color_location);
             //* KAZUMA
 
             // ! ARTHUR
-                test_animation::test_animation(model_location, color_location, time);
+                // test_animation::test_animation(model_location, color_location, time);
             // ! ARTHUR
 
             gl::BindVertexArray(0);

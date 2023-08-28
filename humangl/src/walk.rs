@@ -15,16 +15,26 @@ pub fn head() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
+
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes
 }
@@ -35,16 +45,25 @@ pub fn body() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 180., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [0., 1., 0.].into(),
+		angle : 180.
     });
     keyframes.push(Keyframe{
         time: 2000,
         rot: Vector::from([0., 360., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [0., 1., 0.].into(),
+		angle : 360.
     });
     keyframes
 }
@@ -55,16 +74,25 @@ pub fn rhand() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes
 }
@@ -75,16 +103,25 @@ pub fn lhand() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes
 }
@@ -95,16 +132,25 @@ pub fn rarm() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([-45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
-    });
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
+	});
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 45.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([-45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : -45.
     });
     keyframes
 }
@@ -115,17 +161,26 @@ pub fn larm() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 45.
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([-45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : -45.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
-    });
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 45.
+	});
     keyframes
 }
 
@@ -135,16 +190,27 @@ pub fn rleg() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 45.
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([-45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : -45.
+
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 45.
+
     });
     keyframes
 }
@@ -155,16 +221,26 @@ pub fn lleg() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([-45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : -45.
+
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
-    });
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 45.
+	});
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([-45., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : -45.
     });
     keyframes
 }
@@ -175,16 +251,25 @@ pub fn rfoot() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes
 }
@@ -195,16 +280,25 @@ pub fn lfoot() -> Vec<Keyframe> {
         time: 0,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 500,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes.push(Keyframe{
         time: 1000,
         rot: Vector::from([0., 0., 0.]),
         trans: Vector::from([0., 0., 0.]),
+
+		rot_axis: [1., 0., 0.].into(),
+		angle : 0.
     });
     keyframes
 }

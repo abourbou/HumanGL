@@ -11,6 +11,9 @@ pub struct Keyframe {
     pub time: u32, //ms
     pub rot: TVector3<f32>,
     pub trans: TVector3<f32>,
+
+	pub rot_axis: matrix::Vector3f,
+	pub angle : f32
 }
 
 pub fn get_rotation(angles: &TVector3<f32>) -> TMatrix4<f32> {

@@ -49,7 +49,7 @@ pub fn test_animation(model_location : GLint, color_location : GLint, time : u32
 	// let q_x = matrix::Vector4f::from([1., 0., 0., 0.]);
 	// let q_y = matrix::Vector4f::from([0., 1., 0., 0.]);
 	let q_x = axis_angle_to_quaternion([1., 0., 0.].into(), 0.);
-	let q_y = axis_angle_to_quaternion([1., 0., 0.].into(), std::f32::consts::PI * 2. - 0.01);
+	let q_y = axis_angle_to_quaternion([1., 0., 0.].into(), std::f32::consts::PI / 2.);
 	println!("q_x: {}, q_y: {}", q_x, q_y);
 	let interpol = (time % 3000) as f32 / 3000.;
 	let quaternion = slerp(q_x, q_y, interpol);
@@ -57,16 +57,16 @@ pub fn test_animation(model_location : GLint, color_location : GLint, time : u32
 
 	let mut isometry2 =
 		isometry1
-		* translation(0.3, 0.15, 0.)
+		* translation(0.3, 0.3, 0.)
 		// * center_then_rotate(translation(0., -0.3, 0.), rotation::rx(((time / 10) % 360) as f32))
-		* center_then_rotate(translation(0., -0.3, 0.), quat_to_rotation(quaternion))
+		* center_then_rotate(translation(0., -0.15, 0.), quat_to_rotation(quaternion))
 		;
 	// println!("Isometry2 : {}", isometry2);
 		// * scaling(0.1, 0.7, 0.1);
 	// * rotation::rx(((time / 100) % 360) as f32)
 	// * rotation::rx(((time / 10) % 360) as f32)
 
-	let scaling2 = scaling(0.1, 0.7, 0.1);
+	let scaling2 = scaling(0.1, 0.3, 0.1);
 
 
     // Cube 3 (head)
@@ -77,6 +77,16 @@ pub fn test_animation(model_location : GLint, color_location : GLint, time : u32
 	 ;
 	let scaling3 = scaling(0.3, 0.2, 0.1);
 
+	// Cube 4 (forearm)
+    let cube4 = create_unit_cuboid([0.2, 0.4, 0.2].into());
+	let mut isometry4 =
+		isometry2
+		* translation(0., -0.35, 0.)
+		* center_then_rotate(translation(0., -0.2, 0.), quat_to_rotation(quaternion))
+		;
+	let scaling4 = scaling(0.1, 0.4, 0.1);
+
+
     unsafe {
         // draw_cube(model_location, color_location, &cube1, isometry1);
         // draw_cube(model_location, color_location, &cube2, isometry2);
@@ -84,5 +94,6 @@ pub fn test_animation(model_location : GLint, color_location : GLint, time : u32
         draw_cube(model_location, color_location, &cube1, isometry1 * scaling1);
         draw_cube(model_location, color_location, &cube2, isometry2 * scaling2);
         draw_cube(model_location, color_location, &cube3, isometry3 * scaling3);
+        draw_cube(model_location, color_location, &cube4, isometry4 * scaling4);
     }
 }

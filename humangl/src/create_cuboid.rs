@@ -7,14 +7,14 @@ pub fn create_cuboid(width : f32, height : f32, depth : f32, color : Vector::<f3
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // this doesn't not respect the subject and it will need to be changed↓
     let vertices = [
-        0.5 * width,  0.,           0.5 * depth, // front top right
-        0.5 * width, -1. * height,  0.5 * depth, // front bottom right
-       -0.5 * width, -1. * height,  0.5 * depth, // front bottom left
-       -0.5 * width,  0.,           0.5 * depth, // front top left
-       -0.5 * width,  0.,          -0.5 * depth, // back top left
-       -0.5 * width, -1. * height, -0.5 * depth, // back bottom left
-        0.5 * width, -1. * height, -0.5 * depth, // back bottom right
-        0.5 * width,  0.,          -0.5 * depth // back top right
+        1.,  1.,   1., // front top right
+        1., -1.,   1., // front bottom right
+       -1., -1.,   1., // front bottom left
+       -1.,  1.,   1., // front top left
+       -1.,  1.,  -1., // back top left
+       -1., -1.,  -1., // back bottom left
+        1., -1.,  -1., // back bottom right
+        1.,  1.,  -1. // back top right
    ];
 
     let vertices = (Vector::from(vertices) * 0.5).arr;
@@ -34,10 +34,11 @@ pub fn create_cuboid(width : f32, height : f32, depth : f32, color : Vector::<f3
         0, 4, 7,  // 12 Triangle (top)
     ];
 
-    Mesh::new(vertices.to_vec(), indices.to_vec(), color)
+    Mesh::new(vertices.to_vec(), indices.to_vec(), color, [width, height, depth].into())
 }
 
 pub fn create_unit_cuboid(color : Vector::<f32, 3>) -> Mesh {
+
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // this doesn't not respect the subject and it will need to be changed↓
     let vertices = [
@@ -68,5 +69,5 @@ pub fn create_unit_cuboid(color : Vector::<f32, 3>) -> Mesh {
         0, 4, 7,  // 12 Triangle (top)
     ];
 
-    Mesh::new(vertices.to_vec(), indices.to_vec(), color)
+    Mesh::new(vertices.to_vec(), indices.to_vec(), color, [1., 1., 1.].into())
 }
