@@ -14,8 +14,8 @@ use crate::compute_shader::compute_shader;
 use matrix::Vector;
 
 // settings
-const SCR_WIDTH: u32 = 800;
-const SCR_HEIGHT: u32 = 600;
+const SCR_WIDTH: u32 = 1600;
+const SCR_HEIGHT: u32 = 1200;
 
 fn initialize_glfw() -> (Glfw, Window, Receiver<(f64, WindowEvent)>){
 	// glfw: initialize and configure
@@ -71,7 +71,7 @@ pub fn window() {
         gl::GetUniformLocation(shader_program, proj_string.as_ptr())
     };
 
-    let view = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
+    let view = matrix::graphic_operations::view_matrix([0., 0., -1.5].into(), [0.,0.,0.].into(), [0.,1.,0.].into());
     let proj = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
 
     let flat_view: Vec<f32> = view.arr.iter().flat_map(|row| row.iter().cloned()).collect();

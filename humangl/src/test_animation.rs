@@ -1,6 +1,6 @@
 use crate::animation;
 use crate::animation::Keyframe;
-use crate::tree::Node;
+use crate::node::Node;
 use crate::mesh::Mesh;
 use crate::create_cuboid::create_cuboid;
 use matrix::{Vector, Matrix4f};
@@ -48,8 +48,9 @@ pub fn test_animation(model_location : GLint, color_location : GLint, time : u32
     // let isometry2 = isometry1 * translation(1., 1., 0.);
 	// let q_x = matrix::Vector4f::from([1., 0., 0., 0.]);
 	// let q_y = matrix::Vector4f::from([0., 1., 0., 0.]);
-	let q_x = axis_angle_to_quaternion([1., 0., 0.].into(), 0.);
-	let q_y = axis_angle_to_quaternion([1., 0., 0.].into(), std::f32::consts::PI / 2.);
+	let q_x = axis_angle_to_quaternion([1., 0., 0.].into(), std::f32::consts::PI / 2.);
+	let q_y = axis_angle_to_quaternion([1., 0., 0.].into(), std::f32::consts::PI);
+	let q_z = axis_angle_to_quaternion([1., 0., 0.].into(), std::f32::consts::PI / 2.);
 	println!("q_x: {}, q_y: {}", q_x, q_y);
 	let interpol = (time % 3000) as f32 / 3000.;
 	let quaternion = slerp(q_x, q_y, interpol);
@@ -78,11 +79,12 @@ pub fn test_animation(model_location : GLint, color_location : GLint, time : u32
 	let scaling3 = scaling(0.3, 0.2, 0.1);
 
 	// Cube 4 (forearm)
+	let quaternion2 = slerp(q_x, q_z, interpol);
     let cube4 = create_unit_cuboid([0.2, 0.4, 0.2].into());
 	let mut isometry4 =
 		isometry2
 		* translation(0., -0.35, 0.)
-		* center_then_rotate(translation(0., -0.2, 0.), quat_to_rotation(quaternion))
+		* center_then_rotate(translation(0., -0.2, 0.), quat_to_rotation(quaternion2))
 		;
 	let scaling4 = scaling(0.1, 0.4, 0.1);
 

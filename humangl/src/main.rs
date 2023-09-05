@@ -3,7 +3,7 @@ mod render;
 mod compute_shader;
 mod create_cuboid;
 mod mesh;
-mod tree;
+mod node;
 mod animation;
 mod walk;
 // ! TEMP
