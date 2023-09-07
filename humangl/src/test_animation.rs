@@ -19,7 +19,7 @@ use matrix::graphic_operations::*;
 fn center_then_rotate(isometry: matrix::Matrix4f, rotation : matrix::Matrix4f) -> matrix::Matrix4f {
     let pos = matrix::Vector3f::from([isometry[0][3], isometry[1][3], isometry[2][3]]);
 
-    translation_v(-1. * pos) * rotation * translation_v(pos)
+    translation_v(&(-1. * pos)) * rotation * translation_v(&pos)
 }
 
 unsafe fn draw_cube(model_location : GLint, color_location : GLint, cube : &Mesh, isometry : matrix::Matrix4f)

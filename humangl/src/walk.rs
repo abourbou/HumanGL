@@ -3,8 +3,7 @@ use crate::animation::Keyframe;
 use crate::node::Node;
 use crate::mesh::Mesh;
 use crate::create_cuboid::create_cuboid;
-use matrix::Vector;
-use matrix::Vector3f;
+use matrix::{Vector, Vector3f, graphic_operations::*};
 
 //this class creates the mesh and vector of keyframes for each body parts
 //the animation is set to walk
@@ -32,26 +31,26 @@ pub fn head() -> Vec<Keyframe> {
 
 pub fn body() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
-    keyframes.push(Keyframe{
-        time:  0,
-        rot:   [0., 0., 0.].into(),
-        trans: [-1., 0., 0.].into(),
-    });
+    // keyframes.push(Keyframe{
+    //     time:  0,
+    //     rot:   [0., 0., 0.].into(),
+    //     trans: [-1., 0., 0.].into(),
+    // });
     keyframes.push(Keyframe{
         time:  1000,
-        rot:   [0., 45., 0.].into(),
+        rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
-    keyframes.push(Keyframe{
-        time:  2000,
-        rot:   [0., 0., 0.].into(),
-        trans: [1., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  2000,
-        rot:   [0., -45., 0.].into(),
-        trans: [2., 0., 0.].into(),
-    });
+    // keyframes.push(Keyframe{
+    //     time:  2000,
+    //     rot:   [0., 0., 0.].into(),
+    //     trans: [1., 0., 0.].into(),
+    // });
+    // keyframes.push(Keyframe{
+    //     time:  3000,
+    //     rot:   [0., 0., 0.].into(),
+    //     trans: [2., 0., 0.].into(),
+    // });
     keyframes
 }
 
@@ -228,23 +227,35 @@ pub fn get_body() -> Node {
     let mesh_body : Mesh  = create_cuboid(0.3, 0.5, 0.15, [0., 1., 1.].into());
 
     let head = Node::new("head", mesh_head, Vec::new(), head(),
-                         animation::vector_to_translation(&[0.0, 0.4, 0.].into()),
+                         translation_v(&[0.0, 0.4, 0.].into()),
                          Vector3f::from([0., 0., 0.]));
     let rhand = Node::new("rhand", mesh_rhand, Vec::new(), rhand(),
-                          animation::vector_to_translation(&[0.0, -0.15, 0.].into()),
+                          translation_v(&[0.0, -0.15, 0.].into()),
                           [0., 0.15, 0.].into());
     let rarm = Node::new("rarm", mesh_rarm, Vec::from([rhand]), rarm(),
-                         animation::vector_to_translation(&[0.25, 0.1, 0.].into()),
+                         translation_v(&[0.20, 0.05, 0.].into()),
                          [0., 0.15, 0.].into());
-    // let lhand = Node::new("lhand", mesh_lhand, Vec::new(), lhand(),  animation::vector_to_translation(&Vector::from([0.0, -0.15, 0.])));
-    // let larm = Node::new("larm", mesh_larm, Vec::from([lhand]), larm(),  animation::vector_to_translation(&Vector::from([-0.125, 0.0, 0.])));
-    // let rfoot = Node::new("rfoot", mesh_rfoot, Vec::from([]), rfoot(),  animation::vector_to_translation(&Vector::from([0., -0.15, 0.])));
-    // let rleg = Node::new("rleg", mesh_rleg, Vec::from([rfoot]), rleg(),  animation::vector_to_translation(&Vector::from([0.045, -0.25, 0.])));
-    // let lfoot = Node::new("lfoot", mesh_lfoot, Vec::from([]), lfoot(),  animation::vector_to_translation(&Vector::from([0., -0.15, 0.])));
-    // let lleg = Node::new("lleg", mesh_lleg, Vec::from([lfoot]), lleg(),  animation::vector_to_translation(&Vector::from([-0.045, -0.25, 0.])));
-    let body = Node::new("body", mesh_body, Vec::from([head, rarm/*, larm, rleg, lleg*/]), body(),
-                         animation::vector_to_translation(&[0., 0., 0.].into()),
+    let lhand = Node::new("lhand", mesh_lhand, Vec::new(), lhand(),
+				translation_v(&Vector::from([0.0, -0.15, 0.])),
+				[0., 0.15, 0.].into());
+    let larm = Node::new("larm", mesh_larm, Vec::from([lhand]), larm(),
+				translation_v(&[-0.20, 0.05, 0.].into()),
+				[0., 0.15, 0.].into());
+    let rfoot = Node::new("rfoot", mesh_rfoot, Vec::from([]), rfoot(),
+				translation_v(&Vector::from([0., -0.15, 0.])),
+				[0., 0.15, 0.].into());
+    let rleg = Node::new("rleg", mesh_rleg, Vec::from([rfoot]), rleg(),
+				translation_v(&Vector::from([0.08, -0.4, 0.])),
+				[0., 0.15, 0.].into());
+    let lfoot = Node::new("lfoot", mesh_lfoot, Vec::from([]), lfoot(),
+				translation_v(&Vector::from([0., -0.15, 0.])),
+				[0., 0.15, 0.].into());
+    let lleg = Node::new("lleg", mesh_lleg, Vec::from([lfoot]), lleg(),
+				translation_v(&Vector::from([-0.08, -0.4, 0.])),
+				[0., 0.15, 0.].into());
+    let body = Node::new("body", mesh_body, Vec::from([head, rarm, larm, rleg, lleg]), body(),
+                         translation_v(&[0., 0., 0.].into()),
                          Vector3f::from([0., 0., 0.]));
-                         
-    body
+
+	body
 }
