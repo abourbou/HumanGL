@@ -6,6 +6,8 @@ mod mesh;
 mod node;
 mod animation;
 mod walk;
+mod dance;
+mod punch;
 // ! TEMP
 mod test_animation;
 
