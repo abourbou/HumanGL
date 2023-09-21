@@ -12,13 +12,13 @@ pub struct Keyframe {
 }
 
 // Transform coeffs x, y, z to a rotation matrix rx * ry * rz
-pub fn rpy_to_rotation(angles: &Vector3f) -> Matrix4f {
-    let a = &angles.arr;
-    let mat_x = rotation::rx(a[0]);
-    let mat_y = rotation::ry(a[1]);
-    let mat_z = rotation::rz(a[2]);
-    mat_x * mat_y * mat_z
-}
+// pub fn rpy_to_rotation(angles: &Vector3f) -> Matrix4f {
+//     let a = &angles.arr;
+//     let mat_x = rotation::rx(a[0]);
+//     let mat_y = rotation::ry(a[1]);
+//     let mat_z = rotation::rz(a[2]);
+//     mat_x * mat_y * mat_z
+// }
 
 
 // Create isometry matrix corresponding to a rotation of quat at the position center_rot

@@ -1,12 +1,3 @@
-// pub struct Mesh {
-//     pub vertices: Vec<Vertex>,
-//     pub indices: Vec<u32>,
-//     pub VAO: u32,
-//     pub color: Vector<f32, 3>,
-
-//     VBO: u32,
-//     EBO: u32,
-// }
 extern crate gl;
 
 use std::ptr;
