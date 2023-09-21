@@ -16,16 +16,6 @@ pub fn head() -> Vec<Keyframe> {
         rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
     keyframes
 }
 
@@ -34,22 +24,27 @@ pub fn body() -> Vec<Keyframe> {
     keyframes.push(Keyframe{
         time:  0,
         rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 2.].into(),
+        trans: [0., 0., 1.].into(),
     });
     keyframes.push(Keyframe{
-        time:  5000,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., -2.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  5001,
+        time:  500,
         rot:   [0., 90., 0.].into(),
-        trans: [2., 0., 0.].into(),
+        trans: [0., 0.5, 1.].into(),
     });
     keyframes.push(Keyframe{
-        time:  10000,
-        rot:   [0., 90., 0.].into(),
-        trans: [-2., 0., 0.].into(),
+        time:  1000,
+        rot:   [0., 180., 0.].into(),
+        trans: [0., 1., 1.].into(),
+    });
+    keyframes.push(Keyframe{
+        time:  1500,
+        rot:   [0., 270., 0.].into(),
+        trans: [0., 0.5, 1.].into(),
+    });
+    keyframes.push(Keyframe{
+        time:  2000,
+        rot:   [0., 360., 0.].into(),
+        trans: [0., 0., 1.].into(),
     });
     keyframes
 }
@@ -58,16 +53,6 @@ pub fn rhand() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
         rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
@@ -81,16 +66,6 @@ pub fn lhand() -> Vec<Keyframe> {
         rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
     keyframes
 }
 
@@ -98,17 +73,17 @@ pub fn rarm() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([-45., 0., 0.]),
+        rot:   Vector::from([0., 0., 0.]),
         trans: [0., 0., 0.].into(),
 	});
     keyframes.push(Keyframe{
-        time:  500,
-        rot:   Vector::from([45., 0., 0.]),
+        time:  1000,
+        rot:   Vector::from([180., 0., 0.]),
         trans: [0., 0., 0.].into(),
     });
     keyframes.push(Keyframe{
-        time:  1000,
-        rot:   Vector::from([-45., 0., 0.]),
+        time:  2000,
+        rot:   Vector::from([0., 0., 0.]),
         trans: [0., 0., 0.].into(),
     });
     keyframes
@@ -118,19 +93,19 @@ pub fn larm() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([45., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   Vector::from([-45., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   Vector::from([45., 0., 0.]),
+        rot:   Vector::from([0., 0., 0.]),
         trans: [0., 0., 0.].into(),
 	});
+    keyframes.push(Keyframe{
+        time:  1000,
+        rot:   Vector::from([180., 0., 0.]),
+        trans: [0., 0., 0.].into(),
+    });
+    keyframes.push(Keyframe{
+        time:  2000,
+        rot:   Vector::from([0., 0., 0.]),
+        trans: [0., 0., 0.].into(),
+    });
     keyframes
 }
 
@@ -138,17 +113,7 @@ pub fn rleg() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([45., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   Vector::from([-45., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   Vector::from([45., 0., 0.]),
+        rot:   Vector::from([0., 0., 0.]),
         trans: [0., 0., 0.].into(),
     });
     keyframes
@@ -158,17 +123,7 @@ pub fn lleg() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([-45., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   Vector::from([45., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-	});
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   Vector::from([-45., 0., 0.]),
+        rot:   Vector::from([0., 0., 0.]),
         trans: [0., 0., 0.].into(),
     });
     keyframes
@@ -181,16 +136,6 @@ pub fn rfoot() -> Vec<Keyframe> {
         rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
     keyframes
 }
 
@@ -198,16 +143,6 @@ pub fn lfoot() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
         rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });

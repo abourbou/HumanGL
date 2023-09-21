@@ -1,40 +1,47 @@
 use matrix::{Vector, Matrix};
 use matrix::linear_operations::linear_interp::lerp;
-use matrix::graphic_operations::translation::translation;
-use matrix::graphic_operations::rotation::{rx, ry, rz};
-
-type TVector3<T> = Vector<T, 3>;
-type TMatrix4<T> = Matrix<T, 4, 4>;
+use matrix::graphic_operations::*;
+use super::node::Node;
+use matrix::*;
 
 #[derive(Clone, Debug)]
 pub struct Keyframe {
     pub time: u32, //ms
-    pub rot: TVector3<f32>,
-    pub trans: TVector3<f32>,
+    pub rot: Vector3f,
+    pub trans: Vector3f,
 }
 
-pub fn get_rotation(angles: &TVector3<f32>) -> TMatrix4<f32> {
+// Transform coeffs x, y, z to a rotation matrix rx * ry * rz
+pub fn rpy_to_rotation(angles: &Vector3f) -> Matrix4f {
     let a = &angles.arr;
-    let mat_x = rx(a[0]);
-    let mat_y = ry(a[1]);
-    let mat_z = rz(a[2]);
+    let mat_x = rotation::rx(a[0]);
+    let mat_y = rotation::ry(a[1]);
+    let mat_z = rotation::rz(a[2]);
     mat_x * mat_y * mat_z
 }
 
-pub fn get_translation(trans: &TVector3<f32>) -> TMatrix4<f32> {
-    let t = &trans.arr;
-    translation(t[0], t[1], t[2])
+
+// Create isometry matrix corresponding to a rotation of quat at the position center_rot
+pub fn center_then_rotate(center_rot : matrix::Vector3f, quat: matrix::Vector4f) -> matrix::Matrix4f {
+    let rotation_matrix = quat_to_rotation(quat);
+    
+    translation_v(&center_rot) * rotation_matrix * translation_v(&(-1. * center_rot))
 }
 
-pub fn animate(keyframes: &Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
+pub fn animate(node: &Node, current_time: u32) -> Matrix4f {
+
+    let keyframes = &node.keyframes;
+    let time_ratio = 1;
+
     if keyframes.len() == 1 {
-        let rot_mat = get_rotation(&(keyframes[0].rot));
-        let tran_mat = get_translation(&(keyframes[0].trans));
-        return tran_mat * rot_mat
+        let kf = &keyframes[0];
+        let rot_mat = center_then_rotate(node.center_rot, euler_angle_to_quaternion(kf.rot));
+        let trans_mat = translation_v(&kf.trans);
+        return trans_mat * rot_mat;
     }
     let start_time: u32 = keyframes[0].time;
     let end_time = keyframes.last().unwrap().time;
-    let now = time % (end_time - start_time);
+    let now = (current_time / time_ratio) % (end_time - start_time);
     let mut low = 0;
     let mut high = 0;
     for i in 1..keyframes.len() {
@@ -44,11 +51,17 @@ pub fn animate(keyframes: &Vec<Keyframe>, time: u32) -> TMatrix4<f32> {
             break;
         }
     }
-    let t = (now - keyframes[low].time) as f32 / (keyframes[high].time - keyframes[low].time) as f32;
-    //slerp
-    let rot_vec = lerp(keyframes[low].rot, keyframes[high].rot, t);
-    let trans_vec = lerp(keyframes[low].trans, keyframes[high].trans, t);
-    let rot_mat = get_rotation(&rot_vec);
-    let trans_mat = get_translation(&trans_vec);
-    rot_mat * trans_mat
+    let kf_low   = &keyframes[low];
+    let kf_high = &keyframes[high];
+    let t = (now - kf_low.time) as f32 / (kf_high.time - kf_low.time) as f32;
+    
+    let trans_vec = lerp(kf_low.trans, kf_high.trans, t);
+
+    //Compute rotation
+    let quat_low  = euler_angle_to_quaternion(kf_low.rot);
+    let quat_high = euler_angle_to_quaternion(kf_high.rot);
+    let quat_slerp = slerp(quat_low, quat_high, t);
+    let rot_mat = center_then_rotate(node.center_rot, quat_slerp);
+
+    translation_v(&trans_vec) * rot_mat
 }

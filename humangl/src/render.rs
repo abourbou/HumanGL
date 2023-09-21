@@ -5,13 +5,21 @@ extern crate gl;
 use std::sync::mpsc::Receiver;
 use std::time::SystemTime;
 
+use crate::create_cuboid::create_unit_cuboid;
+
+use crate::test_animation;
+
 use crate::walk;
+use crate::jump;
+use crate::still;
+use crate::dance;
+use crate::punch;
 use crate::compute_shader::compute_shader;
 use matrix::Vector;
 
 // settings
-const SCR_WIDTH: u32 = 800;
-const SCR_HEIGHT: u32 = 600;
+const SCR_WIDTH: u32 = 1600;
+const SCR_HEIGHT: u32 = 1200;
 
 fn initialize_glfw() -> (Glfw, Window, Receiver<(f64, WindowEvent)>){
 	// glfw: initialize and configure
@@ -44,7 +52,7 @@ pub fn window() {
 
 	let (mut glfw, mut window, events) = initialize_glfw();
     let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-    let mut body = walk::get_body();
+    let mut walk_body = punch::get_body();
 
 
     let color_string = std::ffi::CString::new("color").unwrap();
@@ -67,7 +75,7 @@ pub fn window() {
         gl::GetUniformLocation(shader_program, proj_string.as_ptr())
     };
 
-    let view       = matrix::graphic_operations::view_matrix(Vector::from([0., 0., -1.5]), Vector::from([0.,0.,0.]), Vector::from([0.,1.,0.]));
+    let view = matrix::graphic_operations::view_matrix([0., 0., -1.5].into(), [0.,0.,0.].into(), [0.,1.,0.].into());
     let proj = matrix::graphic_operations::projection_matrix(90., 4./3., 0.01, 100.);
 
     let flat_view: Vec<f32> = view.arr.iter().flat_map(|row| row.iter().cloned()).collect();
@@ -100,7 +108,15 @@ pub fn window() {
 
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
-            body.render_animation(time, model_location, color_location);
+
+            //* KAZUMA
+                walk_body.render_animation(time, model_location, color_location);
+            //* KAZUMA
+
+            // ! ARTHUR
+                // test_animation::test_animation(model_location, color_location, time);
+            // ! ARTHUR
+
             gl::BindVertexArray(0);
         }
         // glfw: swap buffers and poll IO events
