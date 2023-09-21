@@ -108,14 +108,7 @@ pub fn window() {
 
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;
-
-            //* KAZUMA
-                walk_body.render_animation(time, model_location, color_location);
-            //* KAZUMA
-
-            // ! ARTHUR
-                // test_animation::test_animation(model_location, color_location, time);
-            // ! ARTHUR
+            walk_body.render_animation(time, model_location, color_location);
 
             gl::BindVertexArray(0);
         }

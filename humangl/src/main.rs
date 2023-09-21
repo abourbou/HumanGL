@@ -10,8 +10,6 @@ mod jump;
 mod still;
 mod dance;
 mod punch;
-// ! TEMP
-mod test_animation;
 
 use render::window;
 
