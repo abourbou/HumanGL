@@ -5,7 +5,7 @@ use crate::create_cuboid::create_cuboid;
 use matrix::{Vector, Vector3f, graphic_operations::*};
 
 //this class creates the mesh and vector of keyframes for each body parts
-//the animation is set to jump
+//the animation is set to dance
 //call get_body() to get the main node
 
 fn head() -> Vec<Keyframe> {

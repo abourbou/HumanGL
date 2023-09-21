@@ -1,4 +1,3 @@
-use crate::animation;
 use crate::animation::Keyframe;
 use crate::node::Node;
 use crate::mesh::Mesh;
@@ -6,7 +5,7 @@ use crate::create_cuboid::create_cuboid;
 use matrix::{Vector, Vector3f, graphic_operations::*};
 
 //this class creates the mesh and vector of keyframes for each body parts
-//the animation is set to walk
+//the animation is set to jump
 //call get_body() to get the main node
 
 pub fn head() -> Vec<Keyframe> {

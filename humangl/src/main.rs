@@ -15,6 +15,5 @@ mod punch;
 use render::window;
 
 fn main() {
-
 	window();
 }

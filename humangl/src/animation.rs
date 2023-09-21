@@ -1,4 +1,3 @@
-use matrix::{Vector, Matrix};
 use matrix::linear_operations::linear_interp::lerp;
 use matrix::graphic_operations::*;
 use super::node::Node;
@@ -10,16 +9,6 @@ pub struct Keyframe {
     pub rot: Vector3f,
     pub trans: Vector3f,
 }
-
-// Transform coeffs x, y, z to a rotation matrix rx * ry * rz
-// pub fn rpy_to_rotation(angles: &Vector3f) -> Matrix4f {
-//     let a = &angles.arr;
-//     let mat_x = rotation::rx(a[0]);
-//     let mat_y = rotation::ry(a[1]);
-//     let mat_z = rotation::rz(a[2]);
-//     mat_x * mat_y * mat_z
-// }
-
 
 // Create isometry matrix corresponding to a rotation of quat at the position center_rot
 pub fn center_then_rotate(center_rot : matrix::Vector3f, quat: matrix::Vector4f) -> matrix::Matrix4f {

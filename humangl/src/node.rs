@@ -2,7 +2,7 @@ extern crate gl;
 
 use std::ptr;
 use gl::types::GLint;
-use matrix::{Matrix, Matrix4, Matrix4f};
+use matrix::Matrix4f;
 use matrix::graphic_operations::scaling_v;
 use matrix::*;
 
@@ -30,14 +30,6 @@ impl Node {
             start_pose,
             center_rot,
         }
-    }
-
-    fn isolate_translation(isometry : Matrix4f) -> Matrix4f {
-        let mut translation_part = Matrix4f::identity();
-        translation_part[0][3] = isometry[0][3];
-        translation_part[1][3] = isometry[1][3];
-        translation_part[2][3] = isometry[2][3];
-        translation_part
     }
 
     fn recurs_render(&self, time: u32, model_location: GLint, color_location: GLint, previous_isometry: Matrix4f) {

@@ -5,7 +5,6 @@ extern crate gl;
 use std::sync::mpsc::Receiver;
 use std::time::SystemTime;
 use std::env;
-use std::collections::HashMap;
 
 use crate::walk;
 use crate::jump;
@@ -13,7 +12,6 @@ use crate::still;
 use crate::dance;
 use crate::punch;
 use crate::compute_shader::compute_shader;
-use crate::node::Node;
 
 // settings
 const SCR_WIDTH: u32 = 1600;
@@ -48,25 +46,26 @@ fn initialize_glfw() -> (Glfw, Window, Receiver<(f64, WindowEvent)>){
 
 pub fn window() {
     let args: Vec<String> = env::args().collect();
+    let animations = ["walk", "jump", "still", "dance", "punch"];
 	if args.len() != 2 {
 		println!("hint: cargo run [animation]");
 		return;
 	}
-	let (mut glfw, mut window, events) = initialize_glfw();
-	let body_hash = HashMap::from([
-		("walk".to_string(), walk::get_body()),
-		("jump".to_string(), jump::get_body()),
-		("still".to_string(), still::get_body()),
-		("dance".to_string(), dance::get_body()),
-		("punch".to_string(), punch::get_body()),
-	]);
-	if !body_hash.contains_key(&args[1]) {
+    if !animations.contains(&args[1].as_ref()) {
 		println!("error: seems like the animation does not exist...");
-		return;
-	}
-    let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
-	let body = body_hash.get(&args[1]).unwrap();
+        return;
+    }
+	let (mut glfw, mut window, events) = initialize_glfw();
+    let body = match args[1].as_ref() {
+        "walk" => walk::get_body(),
+        "jump" => jump::get_body(),
+        "still" => still::get_body(),
+        "dance" => dance::get_body(),
+        "punch" => punch::get_body(),
+        _ => panic!("error: seems like the animation does not exist..."),
+    };
 
+    let shader_program = compute_shader("humangl/shaders/vertex_shader.vs", "humangl/shaders/fragment_shader.fs");
     let color_string = std::ffi::CString::new("color").unwrap();
     let color_location = unsafe {
         gl::GetUniformLocation(shader_program, color_string.as_ptr())
