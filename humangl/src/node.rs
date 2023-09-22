@@ -1,17 +1,8 @@
-// pub struct Mesh {
-//     pub vertices: Vec<Vertex>,
-//     pub indices: Vec<u32>,
-//     pub VAO: u32,
-//     pub color: Vector<f32, 3>,
-
-//     VBO: u32,
-//     EBO: u32,
-// }
 extern crate gl;
 
 use std::ptr;
 use gl::types::GLint;
-use matrix::{Matrix, Matrix4, Matrix4f};
+use matrix::Matrix4f;
 use matrix::graphic_operations::scaling_v;
 use matrix::*;
 
@@ -41,25 +32,12 @@ impl Node {
         }
     }
 
-    fn isolate_translation(isometry : Matrix4f) -> Matrix4f {
-        let mut translation_part = Matrix4f::identity();
-        translation_part[0][3] = isometry[0][3];
-        translation_part[1][3] = isometry[1][3];
-        translation_part[2][3] = isometry[2][3];
-        translation_part
-    }
-
     fn recurs_render(&self, time: u32, model_location: GLint, color_location: GLint, previous_isometry: Matrix4f) {
         // create iso matrix
-        // let (transl_mat, rot_mat) = animation::animate(self, time);
-        // let total_translation = isolate_translation(previous_isometry * transl_mat);
         let animate_mat = animation::animate(self, time);
         let iso_mat = previous_isometry * self.start_pose * animate_mat;
   
         let final_transfo = iso_mat * scaling_v(self.mesh.scaling);
-        if self.name == "body" {
-            // println!("previous_isometry : \n{}\nstart_pose : \n{}\niso_mat : \n{}\nfinal_transfo : {}\n", previous_isometry, self.start_pose, iso_mat, final_transfo);
-        }
         let model: Vec<f32> = final_transfo.arr.iter().flat_map(|row| row.iter().cloned()).collect();
         // create matrix and render
         unsafe {

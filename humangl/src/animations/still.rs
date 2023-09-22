@@ -1,4 +1,3 @@
-use crate::animation;
 use crate::animation::Keyframe;
 use crate::node::Node;
 use crate::mesh::Mesh;
@@ -6,7 +5,7 @@ use crate::create_cuboid::create_cuboid;
 use matrix::{Vector, Vector3f, graphic_operations::*};
 
 //this class creates the mesh and vector of keyframes for each body parts
-//the animation is set to walk
+//the animation is set to stay still
 //call get_body() to get the main node
 
 pub fn head() -> Vec<Keyframe> {
@@ -24,27 +23,7 @@ pub fn body() -> Vec<Keyframe> {
     keyframes.push(Keyframe{
         time:  0,
         rot:   [0., 0., 0.].into(),
-        trans: [0., 0., 1.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  500,
-        rot:   [0., 90., 0.].into(),
-        trans: [0., 0.5, 1.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   [0., 180., 0.].into(),
-        trans: [0., 1., 1.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  1500,
-        rot:   [0., 270., 0.].into(),
-        trans: [0., 0.5, 1.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  2000,
-        rot:   [0., 360., 0.].into(),
-        trans: [0., 0., 1.].into(),
+        trans: [0., 0., 0.].into(),
     });
     keyframes
 }
@@ -73,17 +52,7 @@ pub fn rarm() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([0., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-	});
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   Vector::from([180., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  2000,
-        rot:   Vector::from([0., 0., 0.]),
+        rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
     keyframes
@@ -93,17 +62,7 @@ pub fn larm() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([0., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-	});
-    keyframes.push(Keyframe{
-        time:  1000,
-        rot:   Vector::from([180., 0., 0.]),
-        trans: [0., 0., 0.].into(),
-    });
-    keyframes.push(Keyframe{
-        time:  2000,
-        rot:   Vector::from([0., 0., 0.]),
+        rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
     keyframes
@@ -113,7 +72,7 @@ pub fn rleg() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([0., 0., 0.]),
+        rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
     keyframes
@@ -123,7 +82,7 @@ pub fn lleg() -> Vec<Keyframe> {
     let mut keyframes = Vec::new();
     keyframes.push(Keyframe{
         time:  0,
-        rot:   Vector::from([0., 0., 0.]),
+        rot:   [0., 0., 0.].into(),
         trans: [0., 0., 0.].into(),
     });
     keyframes
