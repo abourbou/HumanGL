@@ -5,12 +5,7 @@ mod create_cuboid;
 mod mesh;
 mod node;
 mod animation;
-mod walk;
-mod jump;
-mod still;
-mod dance;
-mod punch;
-
+mod animations;
 
 use render::window;
 

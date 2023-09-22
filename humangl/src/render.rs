@@ -6,11 +6,7 @@ use std::sync::mpsc::Receiver;
 use std::time::SystemTime;
 use std::env;
 
-use crate::walk;
-use crate::jump;
-use crate::still;
-use crate::dance;
-use crate::punch;
+use crate::animations::*;
 use crate::compute_shader::compute_shader;
 
 // settings
@@ -113,9 +109,6 @@ pub fn window() {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
             gl::UseProgram(shader_program);
-
-            //wire mode
-            gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
 
             // Animation with Node
             let time = sys_time.elapsed().unwrap().as_millis() as u32;

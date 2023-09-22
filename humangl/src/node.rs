@@ -34,15 +34,10 @@ impl Node {
 
     fn recurs_render(&self, time: u32, model_location: GLint, color_location: GLint, previous_isometry: Matrix4f) {
         // create iso matrix
-        // let (transl_mat, rot_mat) = animation::animate(self, time);
-        // let total_translation = isolate_translation(previous_isometry * transl_mat);
         let animate_mat = animation::animate(self, time);
         let iso_mat = previous_isometry * self.start_pose * animate_mat;
   
         let final_transfo = iso_mat * scaling_v(self.mesh.scaling);
-        if self.name == "body" {
-            // println!("previous_isometry : \n{}\nstart_pose : \n{}\niso_mat : \n{}\nfinal_transfo : {}\n", previous_isometry, self.start_pose, iso_mat, final_transfo);
-        }
         let model: Vec<f32> = final_transfo.arr.iter().flat_map(|row| row.iter().cloned()).collect();
         // create matrix and render
         unsafe {

@@ -4,8 +4,6 @@ use super::mesh::Mesh;
 
 pub fn create_cuboid(width : f32, height : f32, depth : f32, color : Vector::<f32, 3>) -> Mesh {
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // this doesn't not respect the subject and it will need to be changed↓
     let vertices = [
         1.,  1.,   1., // front top right
         1., -1.,   1., // front bottom right
