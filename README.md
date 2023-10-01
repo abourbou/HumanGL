@@ -2,13 +2,13 @@
 42 Project HumanGL : an OpenGl project about hierarchical modeling and matrix stack manipulation
 
 
-
-https://github.com/abourbou/HumanGL/assets/47331394/177b1402-0ed8-4c74-b670-8686b4f5730c
-
+https://github.com/abourbou/HumanGL/assets/47331394/09699526-069c-4ac7-97d5-5e1d78742609
 
 
-# Requirements
+
+# Environments
 - rustc 1.69.0
+- Ubuntu 20.04
 
 # Usage
 ```
