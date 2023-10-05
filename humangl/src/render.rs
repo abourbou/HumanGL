@@ -45,10 +45,12 @@ pub fn window() {
     let animations = ["walk", "jump", "still", "dance", "punch"];
 	if args.len() != 2 {
 		println!("hint: cargo run [animation]");
-		return;
+        println!("animations are : walk / jump / still / dance / punch");
+        return;
 	}
     if !animations.contains(&args[1].as_ref()) {
 		println!("error: seems like the animation does not exist...");
+        println!("animations are : walk / jump / still / dance / punch");
         return;
     }
 	let (mut glfw, mut window, events) = initialize_glfw();
